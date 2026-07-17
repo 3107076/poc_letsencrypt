@@ -1,0 +1,55 @@
+name: ssl-rotation-poc
+
+services:
+  # --- CA / server ACME di test (finta Let's Encrypt) ---
+  pebble:
+    image: ghcr.io/letsencrypt/pebble:latest
+    command: -config /test/config/pebble-config.json -dnsserver 127.0.0.11:53
+    environment:
+      - PEBBLE_VA_NOSLEEP=1        # niente attese artificiali fra i tentativi di validazione
+    volumes:
+      - ./pebble/pebble-config.json:/test/config/pebble-config.json:ro
+    ports:
+      - "14000:14000"             # ACME directory (debug)
+      - "15000:15000"             # management API (debug)
+
+  # --- Reverse proxy che espone HTTPS e serve la challenge ---
+  nginx:
+    build: ./nginx
+    depends_on:
+      - pebble
+    networks:
+      default:
+        aliases:
+          - poc.local             # il dominio del PoC risolve su questo container
+    volumes:
+      - webroot:/webroot          # cartella dove lego scrive i token della challenge
+      - certs:/certs              # certificati emessi da lego (condivisi con acme)
+      - web:/web:ro               # dati per la dashboard (status.json/history) scritti da acme
+    ports:
+      - "80:80"                   # HTTP (challenge + redirect)
+      - "443:443"                 # HTTPS (dashboard + /api) -> https://poc.local/
+
+  # --- Client ACME (lego): emette e ruota i certificati ---
+  acme:
+    build: ./acme
+    depends_on:
+      - pebble
+      - nginx
+    environment:
+      - DOMAIN=poc.local
+      - ACME_SERVER=https://pebble:14000/dir
+      - EMAIL=poc@example.com
+      - CHECK_INTERVAL=30         # ogni quanti secondi lego verifica se il cert va rinnovato
+      # La cadenza di rotazione NON e' fissa: lego rinnova quando il cert (vita 5 min,
+      # profilo Pebble) si avvicina alla scadenza. Vedi pebble/pebble-config.json.
+      - LEGO_CA_CERTIFICATES=/pebble.minica.pem
+    volumes:
+      - webroot:/webroot
+      - certs:/certs
+      - web:/web                  # acme scrive qui status.json/history per la dashboard
+
+volumes:
+  webroot:
+  certs:
+  web:
