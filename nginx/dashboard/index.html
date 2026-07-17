@@ -40,6 +40,7 @@
   .hdrstat b{color:var(--txt);font-weight:650;font-variant-numeric:tabular-nums}
   .golink{font-size:12.5px;color:var(--muted);text-decoration:none;white-space:nowrap}
   .golink:hover{color:var(--accent)}
+  .hdractions{display:flex;align-items:center;gap:12px}
   @media(max-width:700px){.hdrstat{display:none}}
 
   /* ---------- HERO ---------- */
@@ -47,6 +48,8 @@
   .hero h1{font-size:35px;line-height:1.14;margin:0 0 15px;font-weight:800;letter-spacing:-.4px;color:#fff}
   .hero .lead{font-size:18px;color:var(--ink);line-height:1.62;margin:0}
   .hero .lead b{color:#fff}
+  .hero .hsub{font-size:16.5px;color:var(--ink);margin:-2px 0 16px;line-height:1.5}
+  .hero .hsub b{color:var(--accent);font-weight:700}
   @media(max-width:640px){.hero h1{font-size:27px}.hero .lead{font-size:16.5px}}
 
   /* ---------- NARRATIVA (atti) ---------- */
@@ -235,9 +238,8 @@
   .inode.vol{flex:1;min-width:92px;text-align:center;font-family:ui-monospace,Consolas,monospace;color:var(--mono);font-size:12.5px}
   .container-chip{margin-top:14px}
   .ilegend2{display:flex;gap:18px;flex-wrap:wrap;margin-top:16px;font-size:12.5px;color:var(--muted)}
-  .ilegend2 span{display:inline-flex;align-items:center}
-  .ilegend2 i{width:18px;height:3px;border-radius:2px;display:inline-block;margin-right:7px}
-  .ilegend2 .a1{background:var(--t-manual)}.ilegend2 .a2{background:var(--t-auto)}.ilegend2 .a3{background:var(--t-initial)}
+  .ilegend2 span{display:inline-flex;align-items:center;gap:6px}
+  .ilegend2 b{color:var(--ink);font-weight:600}
 
   /* pannello dettaglio (flusso/infra) */
   .detail{margin-top:16px;background:var(--panel2);border:1px solid var(--line);border-left:3px solid var(--accent);border-radius:12px;padding:15px 17px}
@@ -253,6 +255,28 @@
   .glossary dt{font-weight:700;color:#fff;font-size:14.5px}
   .glossary dd{margin:2px 0 0;color:var(--ink);font-size:14px;line-height:1.55}
 
+  /* ---------- CONFRONTO prima/dopo (Atto 6) ---------- */
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:4px 0 16px}
+  @media(max-width:640px){.compare{grid-template-columns:1fr}}
+  .cmp{border:1px solid var(--line);border-radius:14px;padding:15px 17px;background:linear-gradient(180deg,var(--panel),var(--panel2))}
+  .cmp.before{border-top:3px solid var(--danger)}
+  .cmp.after{border-top:3px solid var(--t-auto)}
+  .cmph{font-weight:700;font-size:14.5px;color:#fff;margin-bottom:11px}
+  .cmp ol{margin:0;padding-left:20px;color:var(--ink);font-size:14px;line-height:1.5}
+  .cmp ol li{margin-bottom:6px}
+  .cmp p{margin:0 0 9px;color:var(--ink);font-size:14.5px;line-height:1.6}
+  .cmpnote{font-size:13px;color:var(--muted)!important;border-top:1px dashed var(--line);padding-top:10px;margin:11px 0 0!important}
+  .cmp.before .cmpnote{color:var(--t-manual-ink)!important}
+
+  /* ---------- DIPENDENZE (in fondo) ---------- */
+  .deps{display:grid;grid-template-columns:repeat(2,1fr);gap:2px 26px}
+  @media(max-width:640px){.deps{grid-template-columns:1fr}}
+  .depgrp h4{margin:8px 0 7px;font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--accent)}
+  .depgrp ul{margin:0 0 8px;padding-left:18px;color:var(--ink);font-size:13.5px;line-height:1.5}
+  .depgrp li{margin-bottom:6px}
+  .depgrp li b{color:#fff}
+  .depgrp .mono{color:var(--mono);font-size:12.5px}
+
   footer{color:var(--muted);font-size:12.5px;text-align:center;margin-top:36px;line-height:1.75;max-width:1040px;margin-left:auto;margin-right:auto}
   footer code{color:var(--mono);font-family:ui-monospace,Consolas,monospace}
 </style>
@@ -262,7 +286,11 @@
 <!-- ======================= STICKY HEADER ======================= -->
 <div class="topbar">
   <div class="inner">
-    <div class="brand"><span class="lock">🔒</span> Rotazione automatica SSL <span class="dot" id="dot" title="sistema attivo"></span></div>
+    <div class="brand"><span class="lock">🔒</span> Rotazione automatica SSL</div>
+    <div class="hdractions">
+      <span class="dot" id="dot" title="sistema attivo (stato in tempo reale)"></span>
+      <a class="btn sm" href="#demo">Vai alla demo ↓</a>
+    </div>
   </div>
 </div>
 
@@ -270,7 +298,8 @@
 
   <!-- ========================= HERO (Atto 1) ========================= -->
   <section class="hero">
-    <h1>Come un sito si rinnova la «patente» da solo</h1>
+    <h1>Come un sito rinnova la propria identità da solo</h1>
+    <p class="hsub">Ossia: come dimostra, in ogni momento, di essere davvero <b>chi dice di essere</b>.</p>
     <p class="lead">Ogni sito sicuro (quello col lucchetto 🔒) ha un documento d'identità digitale che <b>scade</b>.
       Questa demo mostra, dal vivo, come quel documento venga <b>rinnovato in automatico</b> prima della scadenza —
       senza che nessuno debba ricordarsene e <b>senza mai spegnere il sito</b>.</p>
@@ -279,10 +308,11 @@
       sicurezza ogni pochi minuti, da solo. Normalmente succede ogni pochi mesi e non lo si vede mai; qui è stato
       accelerato apposta, per mostrarlo in diretta.</p>
     </div>
-    <p style="color:var(--ink);font-size:16px;line-height:1.72">La <b style="color:#fff">«s» di HTTP<b>s</b></b> — e il
-      lucchetto accanto all'indirizzo — segna la differenza tra un sito «normale» e un sito <b style="color:#fff">sicuro</b>.
-      Ma cosa la rende possibile, tecnicamente? Un unico oggetto, che lavora dietro le quinte di ogni sito sicuro: il
-      <b style="color:#fff">certificato</b>. Vale la pena vedere cos'è. 👇</p>
+    <p style="color:var(--ink);font-size:16px;line-height:1.72"><b style="color:#fff">HTTP</b> è il linguaggio con cui il
+      browser e il sito si scambiano le pagine web. La <b style="color:#fff">«s» di HTTP<b>s</b></b> — e il lucchetto
+      accanto all'indirizzo — ci aggiunge la <b style="color:#fff">sicurezza</b>: è la differenza tra un sito «normale» e
+      un sito sicuro. Ma cosa la rende possibile, tecnicamente? Un unico oggetto, che lavora dietro le quinte di ogni
+      sito sicuro: il <b style="color:#fff">certificato</b>. Vale la pena vedere cos'è. 👇</p>
   </section>
 
   <div class="hr"></div>
@@ -341,8 +371,8 @@
         <a class="rd" href="https://www.thesslstore.com/blog/the-day-the-music-died-certificate-expiration-takes-down-spotify/" target="_blank" rel="noopener">Leggi l'articolo ↗</a>
       </div>
     </div>
-    <div class="badssl">
-      <a class="btn-ghost" href="https://expired.badssl.com" target="_blank" rel="noopener">🚫 Mostra com'è fatto un avviso ↗</a>
+    <div class="badssl" style="text-align:center">
+      <a class="btn-ghost" href="https://expired.badssl.com" target="_blank" rel="noopener">🚫 Cosa succede se non si rinnova? (esempio dal vivo) ↗</a>
     </div>
   </section>
 
@@ -371,32 +401,37 @@
 
   <div class="hr"></div>
 
-  <!-- ========================= Atto 5 — Il racket ========================= -->
+  <!-- ========================= Atto 5 — Il monopolio ========================= -->
   <section class="act">
     <div class="kick"><span class="num">4</span> Piccola parentesi</div>
-    <h2>💸 Perché una volta era pure un salasso</h2>
-    <p>Fino a non molti anni fa quel documento d'identità andava <b>comprato</b>, ogni anno, da aziende chiamate
-      <span class="term" tabindex="0" data-tip="Autorità di Certificazione: l'ente fidato che rilascia i certificati, come la questura per le carte d'identità. Es. Let's Encrypt, gratuita.">Autorità di Certificazione (CA)</span>.
-      Il modello era delizioso: <i>«Bel sito… sarebbe un peccato se mostrasse un avviso rosso a tutti i visitatori. Con
-      una modica cifra annuale, si può evitare.»</i> 😏 Un pizzo digitale, praticamente — solo con la fattura.</p>
-    <p>Ma perché proprio <i>loro</i> potevano incassare? La chiave è un dettaglio di come funzionano i browser. Negli
-      anni '90, quando nasce il lucchetto, i browser (all'epoca Netscape) si trovavano davanti un problema: <i>di chi
-      fidarsi?</i> La soluzione fu semplice e definitiva: <b>incollare dentro il browser una lista di «enti fidati»</b>
-      — poche aziende, scelte a mano. La prima e più famosa fu <b>VeriSign</b>. Da quel momento la regola diventò: <i>un
-      certificato vale solo se è firmato da uno di quelli già nella lista del browser.</i></p>
-    <p>Tradotto: quelle poche aziende erano diventate i <b>caselli autostradali obbligati</b> di tutta Internet. Per
-      avere il lucchetto, bisognava passare da una di loro. E, guarda caso, entrare in quella lista era difficilissimo.
-      Risultato: <b>oligopolio</b>, certificati a centinaia di dollari l'anno, per un file che a produrlo costa… zero.
-      <b>Questo</b> è il «racket»: non una truffa, ma una posizione di controllo comodissima, garantita dall'essere già
-      dentro la fiducia del browser.</p>
-    <p>Poi nel 2015 è arrivata <b>Let's Encrypt</b>, un'organizzazione no-profit con un'idea rivoluzionaria:
-      <b>certificati gratis per tutti</b>, rilasciati <b>da un robot in pochi secondi</b>. Niente più abbonamenti,
-      niente più telefonate al commerciale. Oggi Let's Encrypt protegge <b>centinaia di milioni di siti</b>, gratis.</p>
+    <h2>💸 Chi rilascia i certificati (e perché non serve più pagare per forza)</h2>
+    <p>I certificati li rilascia una <span class="term" tabindex="0" data-tip="Autorità di Certificazione: l'ente fidato che rilascia i certificati, come la questura per le carte d'identità. Ne esistono a pagamento e gratuite (es. Let's Encrypt).">Autorità di Certificazione (CA)</span>.
+      Di CA ce ne sono tante: alcune i certificati li <b>vendono</b> (con contratti, garanzie e assistenza), altre li
+      danno <b>gratis</b>. Ma perché per anni è stato praticamente <b>obbligatorio pagarle</b>? La risposta sta in un
+      dettaglio di come funzionano i browser.</p>
+    <p>Negli anni '90, quando nasce il lucchetto, i browser (all'epoca Netscape) avevano un problema: <i>di chi
+      fidarsi?</i> La soluzione fu <b>incollare dentro il browser una lista di «enti fidati»</b> — poche aziende, scelte
+      a mano. La prima e più famosa fu <b>VeriSign</b>. Da allora la regola è: <i>un certificato vale solo se è firmato
+      da uno di quelli già nella lista del browser.</i></p>
+    <p>Risultato: quelle poche aziende erano diventate i <b>caselli obbligati</b> di Internet. Per avere il lucchetto
+      bisognava passare da loro, con prezzi fino a centinaia di dollari l'anno per un file che a produrlo costa… zero.
+      In pratica un vero e proprio «monopolio»: non una truffa, ma una posizione di controllo molto comoda. Attenzione: quelle CA
+      <b>esistono e si usano ancora oggi</b> — hanno senso quando servono garanzie, la verifica dell'azienda dietro il
+      sito o un contratto di assistenza.</p>
+    <p>La svolta è del 2015, con <b>Let's Encrypt</b>: un'organizzazione no-profit che rilascia <b>certificati gratis
+      per tutti</b>, tramite <b>un robot, in pochi secondi</b>. Ha rotto l'obbligo di pagare e oggi protegge
+      <b>centinaia di milioni di siti</b>. Ma non è la risposta a tutto.</p>
+    <div class="box warn">
+      <p>⚖️ <span class="bt">Anche il gratis ha dei limiti.</span> Let's Encrypt rilascia solo certificati «base»
+      (verificano il <b>dominio</b>, non l'azienda dietro), che durano <b>poco</b> (90 giorni → l'automazione diventa
+      obbligatoria), senza garanzie assicurative né assistenza telefonica, e con limiti sul numero di emissioni. Per un
+      sito normale è perfetto; per certi scenari aziendali una CA a pagamento resta una scelta sensata.</p>
+    </div>
     <div class="box info">
-      <p>🎩 <span class="bt">E il trucco qual è?</span> Che per essere gratis e automatico, il rilascio doveva essere
-      fatto <b>da una macchina, non da un umano</b>. Così è nato un linguaggio con cui il server e l'autorità «si
-      parlano» da soli per ottenere e rinnovare i certificati. Si chiama <b>ACME</b>, ed è esattamente il protagonista
-      di questa demo.</p>
+      <p>🎩 <span class="bt">E il trucco del «gratis e automatico» qual è?</span> Che il rilascio doveva essere fatto
+      <b>da una macchina, non da un umano</b>. Così è nato un linguaggio con cui il server e l'autorità «si parlano» da
+      soli per ottenere e rinnovare i certificati. Si chiama <b>ACME</b>, ed è esattamente il protagonista di questa
+      demo.</p>
     </div>
   </section>
 
@@ -405,9 +440,31 @@
   <!-- ========================= Atto 6 — ACME (flusso) ========================= -->
   <section class="act">
     <div class="kick"><span class="num">5</span> La soluzione</div>
-    <h2>🤝 Come fa un sito a rinnovarsi da solo: il protocollo ACME</h2>
-    <p>ACME è semplicemente le <b>regole della conversazione</b> tra il server e l'autorità. Tolta ogni sigla, il
-      dialogo è questo:</p>
+    <h2>🤝 Come fa un sito a rinnovare da solo la propria identità: il protocollo ACME</h2>
+    <p>Prima di ACME, ottenere o rinnovare un certificato era una procedura <b>tutta manuale</b>, da ripetere a mano
+      ogni anno. La vera svolta è stata automatizzarla. Ecco il <b>prima</b> e il <b>dopo</b>:</p>
+    <div class="compare">
+      <div class="cmp before">
+        <div class="cmph">🖐️ Prima · a mano, una volta l'anno</div>
+        <ol>
+          <li>Generare a mano una chiave e una <span class="term" tabindex="0" data-tip="Certificate Signing Request: la «domanda» del certificato. Contiene il nome del sito e la sua chiave pubblica, firmata dal server — in pratica il modulo del certificato, compilato e sigillato.">CSR</span> (la «domanda» del certificato).</li>
+          <li>Inviarla al portale della CA e <b>pagare</b>.</li>
+          <li>Dimostrare a mano di controllare il dominio (email, record DNS o file da caricare).</li>
+          <li>Aspettare la verifica — a volte ore o giorni.</li>
+          <li>Scaricare il certificato e <b>installarlo</b> sul server, poi ricaricarlo.</li>
+          <li>Segnarsi in agenda di <b>rifare tutto</b> l'anno dopo.</li>
+        </ol>
+        <p class="cmpnote">Un solo passaggio dimenticato (o il promemoria mancato) = sito offline.</p>
+      </div>
+      <div class="cmp after">
+        <div class="cmph">🤖 Dopo · automatico, in continuo</div>
+        <p>Un programma fa <b>gli stessi identici passi da solo</b>, in pochi secondi, e li ripete prima di ogni
+          scadenza: niente agenda, niente errori umani, nessuna CSR da generare a mano.</p>
+        <p class="cmpnote">Il tutto si riduce a una breve <b>conversazione automatica</b> tra il server e l'autorità 👇</p>
+      </div>
+    </div>
+    <p>Quella conversazione è <b>ACME</b>: né più né meno che le sue <b>regole</b> — tecnicamente un insieme di
+      <b>API</b>, i comandi standard con cui due programmi si parlano. Tolta ogni sigla, il dialogo è questo:</p>
     <div class="dialog">
       <div class="ln"><span class="sp">Server:</span> «Vorrei un certificato per <span class="mono">trenord.it</span>.»</div>
       <div class="ln"><span class="sp ca">Autorità:</span> «Dimostra che il sito è davvero tuo: metti questo codice in un punto preciso.»</div>
@@ -466,7 +523,7 @@
   </div>
 
   <div class="toolbar">
-    <p class="humanline" style="margin:0">Da qui in giù è tutto <span class="em">reale e in tempo reale</span>: i dati
+    <p class="humanline" style="margin:0">Da qui in giù è tutto <span class="em">in tempo reale</span>: i dati
       arrivano dal sistema che sta ruotando i certificati proprio adesso.</p>
     <button id="renewBtn" class="btn" title="Forza subito un rinnovo del certificato">⟳ Forza rinnovo</button>
   </div>
@@ -576,9 +633,9 @@
         <div class="detail" id="infraDetail"></div>
 
         <div class="ilegend2">
-          <span><i class="a1"></i> Browser → nginx: la visita (HTTPS)</span>
-          <span><i class="a2"></i> acme ↔ pebble: il dialogo ACME</span>
-          <span><i class="a3"></i> pebble → nginx: verifica della «prova»</span>
+          <span>🌐 → 🌍 <b>Browser → nginx</b>: la visita (HTTPS)</span>
+          <span>🤖 ↔ 🏛️ <b>acme ↔ pebble</b>: il dialogo ACME</span>
+          <span>🏛️ → 🌍 <b>pebble → nginx</b>: verifica della «prova»</span>
         </div>
       </div>
     </div>
@@ -593,6 +650,7 @@
         <dt>Certificato SSL/TLS</dt><dd>La carta d'identità digitale del sito, con scadenza.</dd>
         <dt>CA (Autorità di Certificazione)</dt><dd>Chi rilascia i certificati (es. Let's Encrypt).</dd>
         <dt>ACME</dt><dd>Il «linguaggio» con cui server e autorità si parlano per rilasciare/rinnovare.</dd>
+        <dt>CSR (Certificate Signing Request)</dt><dd>La «domanda» del certificato: contiene il nome del sito e la sua chiave pubblica. Un tempo si generava a mano; con ACME la crea il programma.</dd>
         <dt>Let's Encrypt</dt><dd>L'autorità no-profit che ha reso i certificati gratis e automatici.</dd>
         <dt>Pebble</dt><dd>La versione «da laboratorio» di Let's Encrypt usata in questa demo, tutta in locale (così non serve un sito pubblico su internet).</dd>
         <dt>Rinnovo / rotazione</dt><dd>Sostituire il certificato con uno nuovo prima che scada.</dd>
@@ -600,6 +658,46 @@
         <dt>Reload a caldo</dt><dd>Il sito adotta il nuovo certificato senza spegnersi nemmeno un istante.</dd>
       </dl>
     </div>
+  </section>
+
+  <!-- ========================= Dipendenze ========================= -->
+  <section class="act">
+    <div class="kick"><span class="num">8</span> Per chi implementa</div>
+    <h2>🧱 Dipendenze del progetto</h2>
+    <p>Tutto open source, poche parti essenziali e <b>nessun framework</b> lato pagina. La demo gira <b>offline</b>: nessuna dipendenza verso Internet a runtime.</p>
+    <div class="card deps">
+      <div class="depgrp">
+        <h4>Runtime</h4>
+        <ul>
+          <li><b>Docker</b> + <b>Docker Compose</b> — orchestrano i 3 container.</li>
+        </ul>
+      </div>
+      <div class="depgrp">
+        <h4>Immagini / servizi</h4>
+        <ul>
+          <li><b>Pebble</b> <span class="mono">ghcr.io/letsencrypt/pebble</span> — server ACME di test (Let's Encrypt).</li>
+          <li><b>lego</b> <span class="mono">goacme/lego</span> — client ACME (Go) che emette e rinnova.</li>
+          <li><b>nginx</b> <span class="mono">nginx:alpine</span> — web server + reverse proxy.</li>
+          <li><b>Alpine Linux</b> <span class="mono">alpine</span> — base del container acme.</li>
+        </ul>
+      </div>
+      <div class="depgrp">
+        <h4>Strumenti nei container</h4>
+        <ul>
+          <li><span class="mono">openssl</span> — genera e legge i certificati.</li>
+          <li><span class="mono">inotify-tools</span> — accorge il cambio cert → reload a caldo.</li>
+          <li><span class="mono">socat</span> — mini-listener per il bottone «Forza rinnovo».</li>
+          <li><span class="mono">bash · curl · ca-certificates</span> — utility di supporto.</li>
+        </ul>
+      </div>
+      <div class="depgrp">
+        <h4>Frontend (questa pagina)</h4>
+        <ul>
+          <li><b>HTML / CSS / JavaScript puro</b> — zero librerie, zero CDN, tutto inline.</li>
+        </ul>
+      </div>
+    </div>
+    <p style="font-size:13px;color:var(--muted)">Le immagini Pebble e lego usano il tag <span class="mono">latest</span>; le altre partono da Alpine.</p>
   </section>
 
   <footer>

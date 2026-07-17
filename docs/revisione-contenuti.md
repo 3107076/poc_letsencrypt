@@ -1,5 +1,11 @@
 # Revisione contenuti dashboard — versione "spiegata ai non tecnici"
 
+> ⚠️ **Nota.** Questo è il **documento di progettazione iniziale** dei contenuti. La pagina finale
+> (`nginx/dashboard/index.html`) è stata poi rifinita e diverge in alcuni punti — es. niente
+> "modalità tecnica" (si mostra sempre tutto), «**monopolio**» al posto di «racket», aggiunta del
+> confronto **prima/dopo con la CSR**, della sezione **dipendenze**, e header con pulsante demo +
+> check verde di stato. In caso di dubbio, **fa fede il codice della pagina**.
+
 > **A cosa serve questo file.** Qui ci sono *tutti i testi* che finiranno nella pagina, da
 > rivedere **prima** che si tocchi il codice. Sono i contenuti veri (copy), non un riassunto: se
 > una frase non va, si corregge qui e finisce in pagina pari pari.
