@@ -1,3 +1,6 @@
 # Nessun certificato/segreto viene salvato su file: vivono nei volumi Docker.
 # Qui solo eventuali artefatti locali.
 *.log
+
+# Documento di progettazione interno: tenuto in locale, non nel repo pubblico
+docs/
