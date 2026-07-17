@@ -147,6 +147,19 @@
   .bar>i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--t-auto),var(--accent));transition:width .8s linear}
   .bar>i.low{background:linear-gradient(90deg,var(--warn),#e0b04a)}
 
+  /* banner "zero downtime" */
+  .uptime{display:flex;align-items:center;gap:15px;border-radius:14px;padding:14px 18px;margin:0 0 16px;
+          background:linear-gradient(180deg,rgba(34,197,94,.13),rgba(34,197,94,.05));border:1px solid rgba(34,197,94,.42)}
+  .uptime.bad{background:linear-gradient(180deg,rgba(242,100,95,.13),rgba(242,100,95,.05));border-color:rgba(242,100,95,.45)}
+  .uptime .up-ic{font-size:26px;line-height:1}
+  .up-big{font-size:19px;font-weight:750;color:#fff}
+  .up-big #upDown{color:var(--t-auto-ink)}
+  .uptime.bad .up-big #upDown{color:#f7a29f}
+  .up-sub{font-size:13px;color:var(--muted);margin-top:2px}
+  .up-sub b{color:var(--ink)}
+  .uptime.flash{animation:upflash 1.1s ease}
+  @keyframes upflash{0%{box-shadow:0 0 0 0 rgba(34,197,94,.5)}100%{box-shadow:0 0 0 13px rgba(34,197,94,0)}}
+
   .card{background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:16px;padding:18px 20px;margin-bottom:16px}
   .card.w{max-width:1040px;margin-left:auto;margin-right:auto}
   .card h3.ct{font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin:0 0 15px;font-weight:650}
@@ -164,8 +177,8 @@
   .b-auto{background:rgba(34,197,94,.16);color:var(--t-auto-ink);border:1px solid rgba(34,197,94,.55)}
   .b-manual{background:rgba(245,158,11,.16);color:var(--t-manual-ink);border:1px solid rgba(245,158,11,.55)}
 
-  .chartwrap{position:relative;overflow-x:auto}
-  svg.chart{display:block;width:100%;min-width:520px;height:auto}
+  .chartwrap{position:relative}
+  svg.chart{display:block;width:100%;height:auto}
   .chart text{font-family:ui-monospace,Consolas,monospace;fill:var(--muted)}
   .chart .axis{stroke:var(--grid);stroke-width:1}
   .chart .target{stroke:var(--accent);stroke-width:1;stroke-dasharray:4 4;opacity:.7}
@@ -528,6 +541,14 @@
     <button id="renewBtn" class="btn" title="Forza subito un rinnovo del certificato">⟳ Forza rinnovo</button>
   </div>
 
+  <div class="uptime" id="uptime">
+    <span class="up-ic">✅</span>
+    <div>
+      <div class="up-big"><b id="upDown">0 s</b> di disservizio</div>
+      <div class="up-sub">durante <b id="upRot">0</b> rinnovi osservati · monitoraggio da <span id="upTime" class="mono">00:00</span></div>
+    </div>
+  </div>
+
   <p class="humanline">⏱️ Il conto alla rovescia: quando sta per finire, il sistema <b style="color:#fff">non aspetta</b> — ne ottiene già
     uno nuovo. Nel mondo reale la barra durerebbe mesi; qui pochi minuti. Ogni rinnovo produce un certificato
     <b style="color:#fff">completamente nuovo</b>, e il contatore delle emissioni sale da solo.</p>
@@ -709,6 +730,8 @@
 <script>
 const $ = id => document.getElementById(id);
 let lifetime = 300, naEpoch = 0, prevSerial = null, failCount = 0;
+// contatore "zero downtime": misura lato client, a partire dalla prima connessione riuscita
+let upStart = 0, upRotations = 0, upFails = 0, upConnected = false;
 
 const TRIG = {
   initial:{cls:'b-initial', fill:'#3b82f6', label:'iniziale'},
@@ -727,6 +750,7 @@ async function tick(){
     if(!r.ok) throw new Error(r.status);
     render(await r.json());
     failCount = 0;
+    if(!upConnected){ upConnected = true; upStart = Date.now(); }
     $('dot').classList.remove('off');
   }catch(e){
     // rosso solo dopo 2 fallimenti consecutivi (evita falsi allarmi su un singolo intoppo)
@@ -734,6 +758,7 @@ async function tick(){
       $('dot').classList.add('off');
       $('liveText').textContent = 'in attesa dei dati…';
     }
+    if(upConnected) upFails++;   // conteggio disservizio solo dopo la prima connessione riuscita
   }
 }
 
@@ -757,6 +782,7 @@ function render(d){
   $('fp').textContent = c.fingerprint_sha256 || '–';
   $('lastTrigger').innerHTML = c.trigger ? badge(c.trigger) : '–';
   prevSerial = c.serial;
+  if(changed){ upRotations++; flashUptime(); }
 
   renderHistory(d.history || [], changed);
   renderChart(d.history || []);
@@ -772,7 +798,18 @@ function renderHistory(hist, changed){
 
 // Countdown alla SCADENZA del certificato (naEpoch). Quando lego rinnova, il valore
 // risale di colpo: e' la prova visiva della rotazione guidata dalla scadenza.
+function fmtElapsed(ms){ if(ms<=0) return '00:00'; const s=Math.floor(ms/1000); return String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0'); }
+function updateUptime(){
+  const down = upFails * 3;   // stima conservativa: ~3s per polling fallito
+  $('upDown').textContent = down + ' s';
+  $('upRot').textContent = upRotations;
+  $('upTime').textContent = upStart ? fmtElapsed(Date.now() - upStart) : '00:00';
+  $('uptime').classList.toggle('bad', down > 0);
+}
+function flashUptime(){ const b = $('uptime'); b.classList.remove('flash'); void b.offsetWidth; b.classList.add('flash'); }
+
 function countdown(){
+  updateUptime();
   if(!naEpoch){ return; }
   const rem = naEpoch - Date.now()/1000;
   const txt = rem>0 ? fmtMMSS(rem) : 'scaduto';
