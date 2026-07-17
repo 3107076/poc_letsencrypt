@@ -92,7 +92,7 @@ ssl-rotation-poc/
 Prerequisito: **Docker Desktop avviato** (verifica: `docker version` mostra anche `Server`).
 
 ```powershell
-cd C:\Users\3107076\DEV\ssl-rotation-poc
+cd path\to\ssl-rotation-poc
 
 docker compose build          # costruisce le immagini nginx e acme
 docker compose up -d          # avvia lo stack

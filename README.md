@@ -28,7 +28,7 @@ Dominio del PoC: **`poc.local`** (alias di rete Docker sul container nginx).
 ## Avvio
 
 ```powershell
-cd C:\Users\3107076\DEV\ssl-rotation-poc
+cd path\to\ssl-rotation-poc
 
 docker compose build
 docker compose up -d
